@@ -15,7 +15,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def profile(self, request, pk=None):
-        clent = self.get_object()
+        client = self.get_object()  # Fixed typo from 'clent' to 'client'
         serializer = ClientProfileSerializer(client)
         return Response(serializer.data)
     

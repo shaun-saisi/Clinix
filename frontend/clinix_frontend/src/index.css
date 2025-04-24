@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.stats-grid {
+  gap: 2rem;
+  background-color: #f5f7fa;
+}
+
+.stat-number {
+  font-size: 2rem;
+  color: #1A3E6F;
+  margin: 0.5rem 0;
+}
+
+.cards-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

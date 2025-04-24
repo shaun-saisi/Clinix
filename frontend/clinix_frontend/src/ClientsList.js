@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import api from './api';
+import BasePage from './BasePage';
 
 const ClientsList = () => {
     const [clients, setClients] = useState([]);
@@ -26,6 +27,7 @@ const ClientsList = () => {
     if (error) return <div>{error}</div>;
 
     return (
+        <BasePage>
         <div>
             <h1>Clients List</h1>
             <ul>
@@ -38,6 +40,7 @@ const ClientsList = () => {
             ))}
             </ul>
         </div>
+        </BasePage>
     )
 }
 

@@ -167,3 +167,69 @@ label {
     display: grid;
     gap: 1rem;
 }
+
+/* Enrollment Styles */
+.enroll-section {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-input {
+  padding: 0.5rem;
+  border: 1px solid #1A3E6F;
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+.client-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.client-info {
+  flex-grow: 1;
+}
+
+.client-info h3 {
+  margin: 0;
+}
+
+
+/* Program Enrollments Styles */
+.program-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.program-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.program-info {
+  flex-grow: 1;
+}
+
+.program-info h3 {
+  margin: 0;
+}
+
+.program-info p {
+  margin: 0.5rem 0;
+}
+
+.program-info small {
+  color: #666;
+}

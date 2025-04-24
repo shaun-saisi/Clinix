@@ -57,7 +57,7 @@ const BasePage = ({ children }) => {
       </main>
 
       <footer style={styles.footer}>
-        <p>© 2023 Clinix Health Management System. All rights reserved.</p>
+        <p>© 2025 Clinix Health Management System. All rights reserved.</p>
       </footer>
     </div>
   );

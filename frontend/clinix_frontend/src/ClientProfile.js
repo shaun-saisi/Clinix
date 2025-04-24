@@ -8,25 +8,34 @@ const ClientProfile = () => {
   const navigate = useNavigate();
   const [client, setClient] = useState(null);
   const [editData, setEditData] = useState({});
+  const [enrollments, setEnrollments] = useState([]);
+  const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchClientProfile = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/clients/${id}/profile/`);
-        setClient(response.data);
-        setEditData(response.data);
+        const [clientRes, enrollmentsRes, programsRes] = await Promise.all([
+          api.get(`/clients/${id}/profile/`),
+          api.get(`/enrollments/?client=${id}`),
+          api.get('/programs/')
+        ]);
+        
+        setClient(clientRes.data);
+        setEditData(clientRes.data);
+        setEnrollments(enrollmentsRes.data);
+        setPrograms(programsRes.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load client profile');
+        setError('Failed to load client data');
         console.error(err);
         setLoading(false);
       }
     };
 
-    fetchClientProfile();
+    fetchData();
   }, [id]);
 
   const handleEdit = async () => {
@@ -53,12 +62,28 @@ const ClientProfile = () => {
     }
   };
 
+  const handleUnenroll = async (enrollmentId) => {
+    try {
+      await api.delete(`/enrollments/${enrollmentId}/`);
+      setEnrollments(enrollments.filter(e => e.id !== enrollmentId));
+    } catch (err) {
+      setError('Failed to unenroll from program');
+      console.error(err);
+    }
+  };
+
   const handleChange = (e) => {
     setEditData({
       ...editData,
       [e.target.name]: e.target.value
     });
   };
+
+  const enrolledPrograms = enrollments.map(enrollment => ({
+    ...programs.find(p => p.id === enrollment.program),
+    enrollmentId: enrollment.id,
+    enrolledOn: enrollment.enrolled_on
+  }));
 
   if (loading) return <BasePage><div>Loading client profile...</div></BasePage>;
   if (error) return <BasePage><div>{error}</div></BasePage>;
@@ -148,7 +173,34 @@ const ClientProfile = () => {
           </div>
         </div>
 
-        {/* Program enrollments section remains the same */}
+        <div className="card">
+          <h2>Enrolled Programs</h2>
+          {enrolledPrograms.length > 0 ? (
+            <ul className="program-list">
+              {enrolledPrograms.map(program => (
+                <li key={program.enrollmentId} className="program-item">
+                  <div className="program-info">
+                    <h3>
+                      <Link to={`/programs/${program.id}`}>{program.title}</Link>
+                    </h3>
+                    <p>{program.description}</p>
+                    <small>
+                      Enrolled on: {new Date(program.enrolledOn).toLocaleDateString()}
+                    </small>
+                  </div>
+                  <button
+                    onClick={() => handleUnenroll(program.enrollmentId)}
+                    className="danger-button"
+                  >
+                    Unenroll
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No active program enrollments</p>
+          )}
+        </div>
 
         <div className="action-buttons">
           <Link to="/clients" className="nav-button">

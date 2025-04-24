@@ -8,26 +8,41 @@ const ProgramDetails = () => {
   const navigate = useNavigate();
   const [program, setProgram] = useState(null);
   const [editData, setEditData] = useState({});
+  const [clients, setClients] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+  const [selectedClient, setSelectedClient] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchProgram = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/programs/${id}/`);
-        setProgram(response.data);
-        setEditData(response.data);
+        const [programRes, clientsRes, enrollmentsRes] = await Promise.all([
+          api.get(`/programs/${id}/`),
+          api.get('/clients/'),
+          api.get('/enrollments/')
+        ]);
+
+        setProgram(programRes.data);
+        setEditData(programRes.data);
+        setClients(clientsRes.data);
+        setEnrollments(enrollmentsRes.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to load program');
+        setError('Failed to load data');
         console.error(err);
         setLoading(false);
       }
     };
 
-    fetchProgram();
+    fetchData();
   }, [id]);
+
+  const enrolledClients = enrollments
+    .filter(e => e.program == id)
+    .map(e => clients.find(c => c.id == e.client))
+    .filter(c => c);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -59,6 +74,35 @@ const ProgramDetails = () => {
       ...editData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleEnrollClient = async () => {
+    if (!selectedClient) return;
+
+    try {
+      await api.post('/enrollments/', {
+        client: selectedClient,
+        program: id
+      });
+
+      const response = await api.get('/enrollments/');
+      setEnrollments(response.data);
+      setSelectedClient('');
+      setError('');
+    } catch (err) {
+      setError('Failed to enroll client');
+      console.error(err);
+    }
+  };
+
+  const handleUnenroll = async (enrollmentId) => {
+    try {
+      await api.delete(`/enrollments/${enrollmentId}/`);
+      setEnrollments(enrollments.filter(e => e.id !== enrollmentId));
+    } catch (err) {
+      setError('Failed to unenroll client');
+      console.error(err);
+    }
   };
 
   if (loading) return <BasePage><div>Loading program...</div></BasePage>;
@@ -132,6 +176,62 @@ const ProgramDetails = () => {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="card">
+          <h2>Enroll New Client</h2>
+          <div className="enroll-section">
+            <select 
+              value={selectedClient}
+              onChange={(e) => setSelectedClient(e.target.value)}
+              className="form-input"
+            >
+              <option value="">Select a client</option>
+              {clients.map(client => (
+                <option key={client.id} value={client.id}>
+                  {client.full_name}
+                </option>
+              ))}
+            </select>
+            <button 
+              onClick={handleEnrollClient}
+              className="primary-button"
+              disabled={!selectedClient}
+            >
+              Enroll Client
+            </button>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Enrolled Clients ({enrolledClients.length})</h2>
+          {enrolledClients.length > 0 ? (
+            <ul className="cards-list">
+              {enrolledClients.map(client => {
+                const enrollment = enrollments.find(e => 
+                  e.client === client.id && e.program == id
+                );
+
+                return (
+                  <li key={client.id} className="client-card">
+                    <div className="client-info">
+                      <h3>{client.full_name}</h3>
+                      <p>Contact: {client.contact}</p>
+                      <p>Date of Birth: {client.date_of_birth}</p>
+                    </div>
+                    <button
+                      onClick={() => handleUnenroll(enrollment.id)}
+                      className="danger-button"
+                    >
+                      Unenroll
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p>No clients enrolled in this program</p>
+          )}
         </div>
 
         <div className="action-buttons">

@@ -46,7 +46,7 @@ const BasePage = ({ children }) => {
       <header style={styles.header}>
         <h1>Clinix </h1>
         <nav style={styles.nav}>
-          <Link to="/" style={styles.navLink}>Dashboard</Link>
+          <Link to="/" style={styles.navLink}>Home</Link>
           <Link to="/clients" style={styles.navLink}>Clients</Link>
           <Link to="/programs" style={styles.navLink}>Programs</Link>
         </nav>

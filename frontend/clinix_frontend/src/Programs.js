@@ -9,7 +9,6 @@ const Programs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Content-specific styles (no colors - uses BasePage's structure)
   const styles = {
     container: {
       padding: '2rem',
@@ -78,21 +77,27 @@ const Programs = () => {
       <div style={styles.container}>
         <div style={styles.header}>
           <h1>Health Programs</h1>
+          <Link to="/" className="nav-button">Back to Dashboard</Link>
         </div>
 
+        
 
         <div style={styles.programList}>
           {programs.map(program => (
             <div key={program.id} style={styles.programCard} className="card">
-              <h3>{program.title}</h3>
-              <p>{program.description}</p>
-              <div className="meta">
-                Program ID: {program.id}
-              </div>
+              <Link to={`/programs/${program.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <h3>{program.title}</h3>
+                <p>{program.description}</p>
+                <div className="meta">
+                  Program ID: {program.id}
+                </div>
+              </Link>
+              <Link to={`/programs/${program.id}`} className="primary-button" style={{ marginTop: '1rem' }}>
+                View Details
+              </Link>
             </div>
           ))}
         </div>
-
 
 
         <form style={styles.form} onSubmit={handleSubmit}>
@@ -116,6 +121,7 @@ const Programs = () => {
             Create Program
           </button>
         </form>
+        
       </div>
     </BasePage>
   );

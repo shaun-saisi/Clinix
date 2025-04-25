@@ -3,8 +3,8 @@ from .models import Program, Client, Enrollment
 
 class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Program  # Changed from Client to Program
-        fields = ['id', 'title', 'description']  # Updated fields
+        model = Program
+        fields = ['id', 'title', 'description']
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,19 +13,21 @@ class ClientSerializer(serializers.ModelSerializer):
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Enrollment  # Changed from Client to Enrollment
+        model = Enrollment
         fields = '__all__'
 
 class ClientProfileSerializer(serializers.ModelSerializer):
     programs = serializers.SerializerMethodField()
 
     class Meta:
-        model = Client    
+        model = Client
         fields = ['id', 'full_name', 'date_of_birth', 'contact', 'programs']
-    
+
     def get_programs(self, obj):
-        # Changed to use program.title instead of name
         return [{
+            'id': en.program.id,
             'title': en.program.title,
-            'description': en.program.description
-        } for en in obj.enrollment_set.all()]
+            'description': en.program.description,
+            'enrollment_id': en.id,
+            'enrolled_on': en.enrolled_on
+        } for en in obj.enrollments.all()]

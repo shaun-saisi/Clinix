@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Program, Client, Enrollment
-from .serializers import ProgramSerializer, ClientSerializer, EnrollmentSerializer, ClientProfileSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from .models import Program, Client, Enrollment
+from .serializers import ProgramSerializer, ClientSerializer, EnrollmentSerializer, ClientProfileSerializer
 
 class ProgramViewSet(viewsets.ModelViewSet):
     queryset = Program.objects.all()
@@ -15,10 +14,10 @@ class ClientViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def profile(self, request, pk=None):
-        client = self.get_object()  # Fixed typo from 'clent' to 'client'
+        client = self.get_object()
         serializer = ClientProfileSerializer(client)
         return Response(serializer.data)
-    
+
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer

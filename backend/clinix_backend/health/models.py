@@ -16,7 +16,7 @@ class Client(models.Model):
         return self.full_name
 
 class Enrollment(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='enrollments')
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     enrolled_on = models.DateTimeField(auto_now_add=True)
 

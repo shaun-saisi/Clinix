@@ -2,31 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from './api';
 import BasePage from './BasePage';
+import { FaUser, FaBirthdayCake, FaPhone, FaNotesMedical, FaCalendarPlus, FaTrash, FaArrowLeft } from 'react-icons/fa';
 
 const ClientProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [client, setClient] = useState(null);
-  const [editData, setEditData] = useState({});
   const [enrollments, setEnrollments] = useState([]);
-  const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [clientRes, enrollmentsRes, programsRes] = await Promise.all([
+        const [clientRes, programsRes] = await Promise.all([
           api.get(`/clients/${id}/profile/`),
-          api.get(`/enrollments/?client=${id}`),
           api.get('/programs/')
         ]);
-        
+
         setClient(clientRes.data);
-        setEditData(clientRes.data);
-        setEnrollments(enrollmentsRes.data);
-        setPrograms(programsRes.data);
+        setEnrollments(clientRes.data.programs.map(program => ({
+          id: program.id,
+          title: program.title,
+          description: program.description,
+          enrollmentId: program.enrollment_id,
+          enrolledOn: program.enrolled_on
+        })));
         setLoading(false);
       } catch (err) {
         setError('Failed to load client data');
@@ -38,174 +39,94 @@ const ClientProfile = () => {
     fetchData();
   }, [id]);
 
-  const handleEdit = async () => {
-    try {
-      const response = await api.put(`/clients/${id}/`, editData);
-      setClient(response.data);
-      setIsEditing(false);
-      setError('');
-    } catch (err) {
-      setError('Failed to update client');
-      console.error(err);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this client?')) {
-      try {
-        await api.delete(`/clients/${id}/`);
-        navigate('/clients');
-      } catch (err) {
-        setError('Failed to delete client');
-        console.error(err);
-      }
-    }
-  };
-
   const handleUnenroll = async (enrollmentId) => {
     try {
       await api.delete(`/enrollments/${enrollmentId}/`);
-      setEnrollments(enrollments.filter(e => e.id !== enrollmentId));
+      setEnrollments(enrollments.filter(e => e.enrollmentId !== enrollmentId));
     } catch (err) {
       setError('Failed to unenroll from program');
       console.error(err);
     }
   };
 
-  const handleChange = (e) => {
-    setEditData({
-      ...editData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const enrolledPrograms = enrollments.map(enrollment => ({
-    ...programs.find(p => p.id === enrollment.program),
-    enrollmentId: enrollment.id,
-    enrolledOn: enrollment.enrolled_on
-  }));
-
-  if (loading) return <BasePage><div>Loading client profile...</div></BasePage>;
-  if (error) return <BasePage><div>{error}</div></BasePage>;
-  if (!client) return <BasePage><div>Client not found</div></BasePage>;
+  if (loading) return <BasePage><div className="loading-state">Loading...</div></BasePage>;
+  if (error) return <BasePage><div className="empty-state">{error}</div></BasePage>;
 
   return (
     <BasePage>
-      <div className="container">
+      <div className="client-profile-container">
         <div className="profile-header">
-          <h1>
-            {isEditing ? (
-              <input
-                type="text"
-                name="full_name"
-                value={editData.full_name}
-                onChange={handleChange}
-                className="edit-input"
-              />
-            ) : (
-              client.full_name
-            )}
+          <h1 className="profile-title">
+            <FaUser /> {client.full_name}'s Profile
           </h1>
-          
-          <div className="action-buttons">
-            {isEditing ? (
-              <>
-                <button onClick={handleEdit} className="primary-button">
-                  Save Changes
-                </button>
-                <button 
-                  onClick={() => setIsEditing(false)} 
-                  className="secondary-button"
-                >
-                  Cancel
-                </button>
-              </>
+          <Link to="/clients" className="primary-button">
+            <FaArrowLeft /> Back to Clients
+          </Link>
+        </div>
+
+        <div className="profile-grid">
+          <div className="profile-card">
+            <h2><FaUser /> Personal Details</h2>
+            <div className="info-grid">
+              <div className="info-item">
+                <label>Full Name</label>
+                <p>{client.full_name}</p>
+              </div>
+              <div className="info-item">
+                <label>Date of Birth</label>
+                <p><FaBirthdayCake /> {new Date(client.date_of_birth).toLocaleDateString()}</p>
+              </div>
+              <div className="info-item">
+                <label>Contact Information</label>
+                <p><FaPhone /> {client.contact}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="profile-card">
+            <div className="section-header">
+              <h2><FaNotesMedical /> Program Enrollments</h2>
+              
+            </div>
+
+            {enrollments.length === 0 ? (
+              <div className="empty-state">No active enrollments found</div>
             ) : (
-              <>
-                <button 
-                  onClick={() => setIsEditing(true)} 
-                  className="primary-button"
-                >
-                  Edit Profile
-                </button>
-                <button 
-                  onClick={handleDelete} 
-                  className="danger-button"
-                >
-                  Delete Client
-                </button>
-              </>
+              <div className="enrollments-table">
+                <div className="enrollment-row">
+                  <div>Program</div>
+                  <div>Enrollment Date</div>
+                  <div>Actions</div>
+                </div>
+                {enrollments.map(program => (
+                  <div className="enrollment-row" key={program.enrollmentId}>
+                    <div>
+                      <div className="detail-label">{program.title}</div>
+                      <div className="detail-value">{program.description}</div>
+                    </div>
+                    <div>{new Date(program.enrolledOn).toLocaleDateString()}</div>
+                    <div>
+                      <button 
+                        onClick={() => handleUnenroll(program.enrollmentId)}
+                        className="secondary-button"
+                      >
+                        <FaTrash /> Unenroll
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-        </div>
-
-        <div className="card">
-          <h2>Personal Information</h2>
-          <div className="info-grid">
-            <div>
-              <label>Date of Birth</label>
-              {isEditing ? (
-                <input
-                  type="date"
-                  name="date_of_birth"
-                  value={editData.date_of_birth}
-                  onChange={handleChange}
-                  className="edit-input"
-                />
-              ) : (
-                <p>{new Date(client.date_of_birth).toLocaleDateString()}</p>
-              )}
-            </div>
-            <div>
-              <label>Contact Information</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="contact"
-                  value={editData.contact}
-                  onChange={handleChange}
-                  className="edit-input"
-                />
-              ) : (
-                <p>{client.contact}</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="card">
-          <h2>Enrolled Programs</h2>
-          {enrolledPrograms.length > 0 ? (
-            <ul className="program-list">
-              {enrolledPrograms.map(program => (
-                <li key={program.enrollmentId} className="program-item">
-                  <div className="program-info">
-                    <h3>
-                      <Link to={`/programs/${program.id}`}>{program.title}</Link>
-                    </h3>
-                    <p>{program.description}</p>
-                    <small>
-                      Enrolled on: {new Date(program.enrolledOn).toLocaleDateString()}
-                    </small>
-                  </div>
-                  <button
-                    onClick={() => handleUnenroll(program.enrollmentId)}
-                    className="danger-button"
-                  >
-                    Unenroll
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No active program enrollments</p>
-          )}
         </div>
 
         <div className="action-buttons">
-          <Link to="/clients" className="nav-button">
-            Back to Clients List
+          <Link to={`/enroll/${id}`} className="primary-button">
+            <FaCalendarPlus /> Enroll in a Program
           </Link>
+          <button onClick={() => navigate(-1)} className="secondary-button">
+            <FaArrowLeft /> Back
+          </button>
         </div>
       </div>
     </BasePage>

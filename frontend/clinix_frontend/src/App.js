@@ -5,6 +5,8 @@ import Homepage from './Homepage';
 import Programs from './Programs';
 import ClientProfile from './ClientProfile';
 import ProgramDetails from './ProgramDetails';
+import EnrollClient from './EnrollClient';
+import ClientSearch from './ClientSearch';
 
 const App = () => {
   return (
@@ -15,6 +17,10 @@ const App = () => {
         <Route path="/programs" element={<Programs />} />
         <Route path="/clients/:id" element={<ClientProfile />} />
         <Route path="/programs/:id" element={<ProgramDetails />} />
+        <Route path="/enroll/:id" element={<EnrollClient />} />
+        <Route path="/clients/search" element={<ClientSearch />} />
+
+
       </Routes>
     </Router>
   );

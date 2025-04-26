@@ -100,17 +100,15 @@ const BasePage = ({ children }) => {
       <header style={styles.header}>
       <div style={styles.headerContent}>
           <Link to="/" style={styles.logo}>
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" style={{ marginRight: '10px' }}>
-              <path d="M16 2L28 8V24L16 30L4 24V8L16 2Z" fill={theme.accentColor} stroke={theme.secondaryColor} strokeWidth="2"/>
-              <path d="M12 18L16 22L24 14" stroke={theme.secondaryColor} strokeWidth="2" strokeLinecap="round"/>
-            </svg>
+            
             Clinix
           </Link>
           <nav style={styles.nav}>
-            <Link to="/" style={styles.navLink}>Home</Link>
+            
             <Link to="/dashboard" style={styles.navLink}>Dashboard</Link>
             <Link to="/clients" style={styles.navLink}>Clients</Link>
             <Link to="/programs" style={styles.navLink}>Health Programs</Link>
+            <Link to="/" style={styles.navLink}>Logout</Link>
           </nav>
         </div>
       </header>

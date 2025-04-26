@@ -10,6 +10,9 @@ import ClientSearch from './ClientSearch';
 import LandingPage from './LandingPage';
 import DoctorRegister from './DoctorRegister';
 import DoctorLogin from './DoctorLogin';
+import MockDashboard from './MockDashboard';
+import MockClients from './MockClients';
+import MockPrograms from './MockPrograms';
 import ProtectedRoute from './ProtectedRoute';
 
 const App = () => {
@@ -19,12 +22,17 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<DoctorRegister />} />
         <Route path="/login" element={<DoctorLogin />} />
+        <Route path="/clients" element={<ClientsList />} />
+          <Route path="/programs" element={<Programs />} />
+
+          <Route path="/mockdashboard" element={<MockDashboard />} />
+          <Route path="/mockclients" element={<MockClients />} />
+          <Route path="/mockprograms" element={<MockPrograms />} />
         
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Homepage />} />
-          <Route path="/clients" element={<ClientsList />} />
-          <Route path="/programs" element={<Programs />} />
+          
           <Route path="/clients/:id" element={<ClientProfile />} />
           <Route path="/programs/:id" element={<ProgramDetails />} />
           <Route path="/enroll/:id" element={<EnrollClient />} />

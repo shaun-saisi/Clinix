@@ -1,3 +1,5 @@
+// The structure to visualize my program cards is handled here
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from './api';

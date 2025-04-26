@@ -1,4 +1,4 @@
-// DoctorLogin.js
+// DoctorLogin.js  Still not using this page As I have implemented modal login forms 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from './api';

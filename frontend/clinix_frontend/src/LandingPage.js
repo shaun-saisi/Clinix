@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
+//This is the main page which registered and unregisterd clients can access where registration occres and navigation to my minimum viable product
+
+import React, { useState, useEffect } from 'react'; 
 import { useNavigate, Link } from 'react-router-dom';
 import api from './api';
 
@@ -12,7 +14,7 @@ const LandingPage = () => {
     phone: ''
   });
   const [error, setError] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Added authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
   const navigate = useNavigate();
 
   const theme = {

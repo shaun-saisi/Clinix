@@ -1,9 +1,11 @@
+// This is the basepage that contains the header, the footer the login and lout functionality that will be inherited by all other pages
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800&display=swap" rel="stylesheet"></link>
 
 const BasePage = ({ children }) => {
-  // Enhanced theme configuration with modern healthcare colors
+  
   const theme = {
     primaryColor: '#1A3E6F',      // Deep professional blue
     secondaryColor: '#FFFFFF',    // Clean white

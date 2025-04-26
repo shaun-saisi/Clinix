@@ -1,3 +1,5 @@
+# The basic structure of my app with my models together with their relationships to be stored in my sqlite3 server
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 

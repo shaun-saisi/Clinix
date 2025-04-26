@@ -1,3 +1,5 @@
+//After successful registration and login the user is redirected to this page which is a welcome homepage from where the dashboard is located and the user can access all the available functionalities of the system
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from './api';

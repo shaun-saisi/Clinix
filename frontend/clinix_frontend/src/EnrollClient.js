@@ -1,3 +1,5 @@
+//Here a registered client is enrolled into a program together with all editing and unrolling capabilities
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from './api';

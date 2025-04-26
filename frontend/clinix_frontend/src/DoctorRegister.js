@@ -1,4 +1,4 @@
-// DoctorRegister.js
+// DoctorRegister.js  Also not using this page as I am still using modal registration forms 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from './api';

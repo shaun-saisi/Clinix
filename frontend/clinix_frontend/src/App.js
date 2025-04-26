@@ -1,5 +1,7 @@
+//All routing for my pages is handled here 
+
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Added Navigate import
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; 
 import ClientsList from './ClientsList';
 import Homepage from './Homepage';
 import Programs from './Programs';

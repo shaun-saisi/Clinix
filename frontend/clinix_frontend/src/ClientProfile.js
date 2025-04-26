@@ -1,3 +1,5 @@
+// This page contains the detailed structure to the client profile and all the required functionalities 
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from './api';

@@ -1,3 +1,5 @@
+//This page contains static data for clients as it was the easiest way to implement fshowing of functionalitie in my MVP
+
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react'; 
 import { useNavigate, } from 'react-router-dom';
@@ -13,7 +15,7 @@ const [showLogin, setShowLogin] = useState(false);
     phone: ''
   });
   const [error, setError] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Added authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
   const navigate = useNavigate();
 
   const theme = {
@@ -123,7 +125,8 @@ const [showLogin, setShowLogin] = useState(false);
                   </Link>
                   <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
                   <a href="/" style={navLinkStyle(theme)}>Home</a>
-                    <a href="/mockclients" style={navLinkStyle(theme)}>Clients</a>
+                  <a href="/mockdashboard" style={navLinkStyle(theme)}>Dashboard</a>
+                    
                     <a href="/mockprograms" style={navLinkStyle(theme)}>Health Programs</a>
                     
                     {/* Updated authentication-based buttons */}

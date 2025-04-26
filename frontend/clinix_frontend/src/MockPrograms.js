@@ -1,3 +1,5 @@
+//My mock programs for my MVP
+
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react'; 
 import { useNavigate, } from 'react-router-dom';
@@ -124,8 +126,9 @@ const MockPrograms = () => {
                       </Link>
                       <nav style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
                       <a href="/" style={navLinkStyle(theme)}>Home</a>
+                      <a href="/mockdashboard" style={navLinkStyle(theme)}>Dashboard</a>
                         <a href="/mockclients" style={navLinkStyle(theme)}>Clients</a>
-                        <a href="/mockprograms" style={navLinkStyle(theme)}>Health Programs</a>
+                        
                         
                         {/* Updated authentication-based buttons */}
                         {isAuthenticated ? (

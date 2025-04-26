@@ -1,3 +1,5 @@
+//Here we implement the search functionality for a client from the list of registered clients
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from './api';

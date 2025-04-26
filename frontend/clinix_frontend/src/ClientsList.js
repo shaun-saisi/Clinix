@@ -1,3 +1,5 @@
+//Here we have the layout and organization of the clients
+
 import React, { useEffect, useState } from 'react';
 import api from './api';
 import { Link } from 'react-router-dom';

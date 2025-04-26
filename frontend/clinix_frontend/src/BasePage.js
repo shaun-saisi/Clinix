@@ -108,8 +108,9 @@ const BasePage = ({ children }) => {
           </Link>
           <nav style={styles.nav}>
             <Link to="/" style={styles.navLink}>Home</Link>
+            <Link to="/dashboard" style={styles.navLink}>Dashboard</Link>
             <Link to="/clients" style={styles.navLink}>Clients</Link>
-            <Link to="/programs" style={styles.navLink}>Programs</Link>
+            <Link to="/programs" style={styles.navLink}>Health Programs</Link>
           </nav>
         </div>
       </header>

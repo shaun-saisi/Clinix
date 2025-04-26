@@ -16,13 +16,19 @@ const ClientsList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
+    const [doctorId, setDoctorId] = useState(null);
 
     useEffect(() => {
-        const fetchClients = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/clients/');
-                setClients(response.data);
-                setFilteredClients(response.data);
+                // Get current doctor first
+                const doctorRes = await api.get('/api/doctor/me/');
+                setDoctorId(doctorRes.data.id);
+                
+                // Fetch doctor-specific clients
+                const clientsRes = await api.get(`/api/clients/?doctor=${doctorRes.data.id}`);
+                setClients(clientsRes.data);
+                setFilteredClients(clientsRes.data);
             } catch (err) {
                 setError('Failed to fetch clients');
                 console.error(err);
@@ -31,13 +37,18 @@ const ClientsList = () => {
             }
         };
 
-        fetchClients();
+        fetchData();
     }, []);
 
     const handleCreateClient = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/clients/', newClient);
+            const clientData = {
+                ...newClient,
+                doctor: doctorId
+            };
+            
+            const response = await api.post('/api/clients/', clientData);
             const updatedClients = [...clients, response.data];
             setClients(updatedClients);
             setFilteredClients(updatedClients);
@@ -45,7 +56,7 @@ const ClientsList = () => {
             setShowForm(false);
             setError('');
         } catch (err) {
-            setError('Failed to create client');
+            setError(err.response?.data?.detail || 'Failed to create client');
             console.error(err);
         }
     };
@@ -92,31 +103,33 @@ const ClientsList = () => {
                         <div className="cards-list">
                             {filteredClients.slice(0, 6).map((client, index) => (
                                 <motion.div
-                                key={client.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                className="client-card card"
-                            >
-                                <h3>{client.full_name}</h3>
-                                <div className="client-details">
-                                    <p>
-                                        <span className="detail-label">Date of Birth:</span>
-                                        <span className="detail-value">{client.date_of_birth}</span>
-                                    </p>
-                                    <p>
-                                        <span className="detail-label">Contact:</span>
-                                        <span className="detail-value">{client.contact}</span>
-                                    </p>
-                                </div>
-                                <Link 
-                                    to={`/clients/${client.id}`} 
-                                    className="primary-button"
-                                    style={{ marginTop: '1rem' }}
+                                    key={client.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="client-card card"
                                 >
-                                    View Profile
-                                </Link>
-                            </motion.div>
+                                    <h3>{client.full_name}</h3>
+                                    <div className="client-details">
+                                        <p>
+                                            <span className="detail-label">Date of Birth:</span>
+                                            <span className="detail-value">
+                                                {new Date(client.date_of_birth).toLocaleDateString()}
+                                            </span>
+                                        </p>
+                                        <p>
+                                            <span className="detail-label">Contact:</span>
+                                            <span className="detail-value">{client.contact}</span>
+                                        </p>
+                                    </div>
+                                    <Link 
+                                        to={`/clients/${client.id}`} 
+                                        className="primary-button"
+                                        style={{ marginTop: '1rem' }}
+                                    >
+                                        View Profile
+                                    </Link>
+                                </motion.div>
                             ))}
                         </div>
                     ) : (

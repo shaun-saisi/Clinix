@@ -18,8 +18,8 @@ const EnrollClient = () => {
     const fetchData = async () => {
       try {
         const [programsRes, clientRes] = await Promise.all([
-          api.get('/programs/'),
-          api.get(`/clients/${id}/`)
+          api.get('/api/programs/'),
+          api.get(`/api/clients/${id}/`)
         ]);
         setPrograms(programsRes.data);
         setClientInfo(clientRes.data);
@@ -39,7 +39,7 @@ const EnrollClient = () => {
     setIsSubmitting(true);
 
     try {
-      await api.post('/enrollments/', {
+      await api.post('/api/enrollments/', {
         client: parseInt(id),
         program: parseInt(selectedProgram)
       });

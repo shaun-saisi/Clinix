@@ -35,10 +35,17 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    # Admin Interface
     path('admin/', admin.site.urls),
+    
+    # API Routes
     path('api/', include('health.urls')),
 
-    #Swagger
+    # Swagger Documentation
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+
+    # ReDoc Documentation
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
+    
 ]

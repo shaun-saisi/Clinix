@@ -19,9 +19,9 @@ const ProgramDetails = () => {
     const fetchData = async () => {
       try {
         const [programRes, clientsRes, enrollmentsRes] = await Promise.all([
-          api.get(`/programs/${id}/`),
-          api.get('/clients/'),
-          api.get('/enrollments/')
+          api.get(`/api/programs/${id}/`),
+          api.get('/api/clients/'),
+          api.get('/api/enrollments/')
         ]);
 
         setProgram(programRes.data);
@@ -40,14 +40,14 @@ const ProgramDetails = () => {
   }, [id]);
 
   const enrolledClients = enrollments
-    .filter(e => e.program == id)
-    .map(e => clients.find(c => c.id == e.client))
+    .filter(e => String(e.program) === id)
+    .map(e => clients.find(c => c.id === e.client))
     .filter(c => c);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.put(`/programs/${id}/`, editData);
+      const response = await api.put(`/api/programs/${id}/`, editData);
       setProgram(response.data);
       setIsEditing(false);
       setError('');
@@ -60,7 +60,7 @@ const ProgramDetails = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this program?')) {
       try {
-        await api.delete(`/programs/${id}/`);
+        await api.delete(`/api/programs/${id}/`);
         navigate('/programs');
       } catch (err) {
         setError('Failed to delete program');
@@ -80,12 +80,12 @@ const ProgramDetails = () => {
     if (!selectedClient) return;
 
     try {
-      await api.post('/enrollments/', {
+      await api.post('/api/enrollments/', {
         client: selectedClient,
         program: id
       });
 
-      const response = await api.get('/enrollments/');
+      const response = await api.get('/api/enrollments/');
       setEnrollments(response.data);
       setSelectedClient('');
       setError('');
@@ -97,7 +97,7 @@ const ProgramDetails = () => {
 
   const handleUnenroll = async (enrollmentId) => {
     try {
-      await api.delete(`/enrollments/${enrollmentId}/`);
+      await api.delete(`/api/enrollments/${enrollmentId}/`);
       setEnrollments(enrollments.filter(e => e.id !== enrollmentId));
     } catch (err) {
       setError('Failed to unenroll client');
@@ -179,110 +179,113 @@ const ProgramDetails = () => {
         </div>
 
         {/* Enroll Client Section */}
-<div className="card">
-  <div className="section-header">
-    <h2>Enroll New Client</h2>
-    <div className="enroll-controls" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-      <select 
-        value={selectedClient}
-        onChange={(e) => setSelectedClient(e.target.value)}
-        className="form-input"
-        style={{ flex: '1', minWidth: '200px' }}
-      >
-        <option value="">Select a client</option>
-        {clients.map(client => (
-          <option key={client.id} value={client.id}>
-            {client.full_name}
-          </option>
-        ))}
-      </select>
-      <button 
-        onClick={handleEnrollClient}
-        className="primary-button"
-        style={{ padding: '10px 20px' }}
-        disabled={!selectedClient}
-      >
-        Enroll Client
-      </button>
-    </div>
-  </div>
-</div>
-
-{/* Enrolled Clients Card */}
-<div className="card">
-  <div className="section-header">
-    <h2>Enrolled Clients ({enrolledClients.length})</h2>
-  </div>
-  {enrolledClients.length > 0 ? (
-    <ul className="cards-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '0', margin: '0', listStyleType: 'none' }}>
-      {enrolledClients.map(client => {
-        const enrollment = enrollments.find(
-          e => e.client === client.id && e.program === id
-        );
-
-        return (
-          <li
-            key={client.id}
-            className="client-card"
-            style={{
-              flex: '0 1 calc(50% - 16px)',
-              boxSizing: 'border-box',
-              padding: '15px',
-              marginBottom: '16px',
-              background: '#f9f9f9',
-              borderRadius: '8px'
-            }}
-          >
-            <div className="client-info">
-              <h3 style={{ marginBottom: '10px' }}>{client.full_name}</h3>
-              <div className="client-details">
-                <p>
-                  <span className="detail-label">Contact:</span> {client.contact}
-                </p>
-                <p>
-                  <span className="detail-label">Date of Birth:</span> {client.date_of_birth}
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-              <Link
-                to={`/clients/${client.id}`}
-                className="primary-button small-button"
-                style={{
-                  padding: '8px 16px',
-                  fontSize: '14px',
-                  textDecoration: 'none'
-                }}
+        <div className="card">
+          <div className="section-header">
+            <h2>Enroll New Client</h2>
+            <div className="enroll-controls" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <select 
+                value={selectedClient}
+                onChange={(e) => setSelectedClient(e.target.value)}
+                className="form-input"
+                style={{ flex: '1', minWidth: '200px' }}
               >
-                View Profile
-              </Link>
-              <button
-                onClick={() => handleUnenroll(enrollment.id)}
-                className="danger-button small-button"
-                style={{
-                  padding: '8px 16px',
-                  fontSize: '14px',
-                  background: '#e74c3c',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
+                <option value="">Select a client</option>
+                {clients.map(client => (
+                  <option key={client.id} value={client.id}>
+                    {client.full_name}
+                  </option>
+                ))}
+              </select>
+              <button 
+                onClick={handleEnrollClient}
+                className="primary-button"
+                style={{ padding: '10px 20px' }}
+                disabled={!selectedClient}
               >
-                Unenroll
+                Enroll Client
               </button>
             </div>
-          </li>
-        );
-      })}
-    </ul>
-  ) : (
-    <div className="empty-state" style={{ marginTop: '20px', textAlign: 'center' }}>
-      <p>No clients enrolled in this program</p>
-    </div>
-  )}
-</div>
+          </div>
+        </div>
+
+        {/* Enrolled Clients Section */}
+        <div className="card">
+          <div className="section-header">
+            <h2>Enrolled Clients ({enrolledClients.length})</h2>
+          </div>
+
+          {enrolledClients.length > 0 ? (
+            <ul className="cards-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '0', margin: '0', listStyleType: 'none' }}>
+              {enrolledClients.map(client => {
+                const enrollment = enrollments.find(
+                  e => e.client === client.id && String(e.program) === id
+                );
+
+                return (
+                  <li
+                    key={client.id}
+                    className="client-card"
+                    style={{
+                      flex: '0 1 calc(50% - 16px)',
+                      boxSizing: 'border-box',
+                      padding: '15px',
+                      marginBottom: '16px',
+                      background: '#f9f9f9',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    <div className="client-info">
+                      <h3 style={{ marginBottom: '10px' }}>{client.full_name}</h3>
+                      <div className="client-details">
+                        <p>
+                          <span className="detail-label">Contact:</span> {client.contact}
+                        </p>
+                        <p>
+                          <span className="detail-label">Date of Birth:</span> {client.date_of_birth}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                      <Link
+                        to={`/clients/${client.id}`}
+                        className="primary-button small-button"
+                        style={{
+                          padding: '8px 16px',
+                          fontSize: '14px',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        View Profile
+                      </Link>
+                      {enrollment && (
+                        <button
+                          onClick={() => handleUnenroll(enrollment.id)}
+                          className="danger-button small-button"
+                          style={{
+                            padding: '8px 16px',
+                            fontSize: '14px',
+                            background: '#e74c3c',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Unenroll
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="empty-state" style={{ marginTop: '20px', textAlign: 'center' }}>
+              <p>No clients enrolled in this program</p>
+            </div>
+          )}
+        </div>
 
         {/* Navigation */}
         <div className="action-buttons center">

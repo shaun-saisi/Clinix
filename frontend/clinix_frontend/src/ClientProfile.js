@@ -12,41 +12,52 @@ const ClientProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [clientRes, programsRes] = await Promise.all([
-          api.get(`/clients/${id}/profile/`),
-          api.get('/programs/')
-        ]);
+  const fetchClientProfile = async () => {
+    try {
+      const response = await api.get(`/api/clients/${id}/profile/`);
+      const clientData = response.data;
 
-        setClient(clientRes.data);
-        setEnrollments(clientRes.data.programs.map(program => ({
+      setClient(clientData);
+
+      if (Array.isArray(clientData.programs)) {
+        const transformed = clientData.programs.map(program => ({
           id: program.id,
           title: program.title,
           description: program.description,
           enrollmentId: program.enrollment_id,
           enrolledOn: program.enrolled_on
-        })));
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load client data');
-        console.error(err);
-        setLoading(false);
+        }));
+        setEnrollments(transformed);
+      } else {
+        setEnrollments([]);
       }
-    };
 
-    fetchData();
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching client profile:', err);
+      const detail = err.response?.data?.detail || 'Failed to load client data.';
+      setError(detail);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchClientProfile();
   }, [id]);
 
   const handleUnenroll = async (enrollmentId) => {
     try {
-      await api.delete(`/enrollments/${enrollmentId}/`);
-      setEnrollments(enrollments.filter(e => e.enrollmentId !== enrollmentId));
+      await api.delete(`/api/enrollments/${enrollmentId}/`);
+      // After unenroll, refresh client profile
+      await fetchClientProfile();
     } catch (err) {
-      setError('Failed to unenroll from program');
-      console.error(err);
+      console.error('Failed to unenroll:', err);
+      setError('Failed to unenroll from program.');
     }
+  };
+
+  const handleEnrollClick = () => {
+    navigate(`/enroll/${id}`, { state: { returnToProfile: true } });
   };
 
   if (loading) return <BasePage><div className="loading-state">Loading...</div></BasePage>;
@@ -57,7 +68,7 @@ const ClientProfile = () => {
       <div className="client-profile-container">
         <div className="profile-header">
           <h1 className="profile-title">
-            <FaUser /> {client.full_name}'s Profile
+            <FaUser /> {client.full_name || 'Unnamed Client'}'s Profile
           </h1>
           <Link to="/clients" className="primary-button">
             <FaArrowLeft /> Back to Clients
@@ -70,25 +81,21 @@ const ClientProfile = () => {
             <div className="info-grid">
               <div className="info-item">
                 <label>Full Name</label>
-                <p>{client.full_name}</p>
+                <p>{client.full_name || 'N/A'}</p>
               </div>
               <div className="info-item">
                 <label>Date of Birth</label>
-                <p><FaBirthdayCake /> {new Date(client.date_of_birth).toLocaleDateString()}</p>
+                <p><FaBirthdayCake /> {client.date_of_birth ? new Date(client.date_of_birth).toLocaleDateString() : 'N/A'}</p>
               </div>
               <div className="info-item">
-                <label>Contact Information</label>
-                <p><FaPhone /> {client.contact}</p>
+                <label>Contact</label>
+                <p><FaPhone /> {client.contact || 'N/A'}</p>
               </div>
             </div>
           </div>
 
           <div className="profile-card">
-            <div className="section-header">
-              <h2><FaNotesMedical /> Program Enrollments</h2>
-              
-            </div>
-
+            <h2><FaNotesMedical /> Program Enrollments</h2>
             {enrollments.length === 0 ? (
               <div className="empty-state">No active enrollments found</div>
             ) : (
@@ -121,9 +128,9 @@ const ClientProfile = () => {
         </div>
 
         <div className="action-buttons">
-          <Link to={`/enroll/${id}`} className="primary-button">
+          <button onClick={handleEnrollClick} className="primary-button">
             <FaCalendarPlus /> Enroll in a Program
-          </Link>
+          </button>
           <button onClick={() => navigate(-1)} className="secondary-button">
             <FaArrowLeft /> Back
           </button>

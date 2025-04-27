@@ -148,4 +148,5 @@ Email: anundashaun@gmail.com
 
 ### Presentation
 
-[📑 Presentation of My Approach (PowerPoint)](https://github.com/shaun-saisi/Clinix/blob/main/pitch%20deck.pptx)
+[ Presentation of My Approach (PowerPoint)]
+https://docs.google.com/presentation/d/15-BA3YRFo9GDOdfQw5fdJs4-vUYYyChY/edit?usp=sharing&ouid=102875035903182860455&rtpof=true&sd=true

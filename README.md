@@ -1,6 +1,6 @@
 # Clinix - Health Information Management System
 
-![Clinix Dashboard](frontend/public/images/clinix-preview.png)
+!
 
 Clinix is a comprehensive Health Management System (HMS) designed to streamline patient management and health program tracking. Built with Django REST Framework (backend) and React (frontend), the system empowers healthcare professionals to efficiently manage client data and program enrollments.
 
@@ -95,7 +95,7 @@ Clinix is a comprehensive Health Management System (HMS) designed to streamline 
 
 ### Backend
 - **Framework**: Django 4.1 + Django REST Framework
-- **Database**: PostgreSQL
+- **Database**: sqlite3
 - **Authentication**: JWT (JSON Web Tokens)
 - **API Docs**: drf-yasg (Swagger/OpenAPI)
 
@@ -109,15 +109,24 @@ Clinix is a comprehensive Health Management System (HMS) designed to streamline 
 ```bash
 # Backend
 git clone https://github.com/shaun-saisi/Clinix.git
-cd Clinix/backend
+cd Clinix/backend/clinix_backend
 pipenv install
-python manage.py migrate
-python manage.py runserver
+
+# Activate the virtual environment
+source venv/bin/activate
+
+cd Clinix/backend/clinix_backend/clinix_backend
+pip install -r requirements.txt
+
+python3 manage.py migrate
+python3 manage.py runserver
 
 # Frontend
-cd ../frontend
+cd Clinix/frontend/clinix_frontend
 npm install
 npm start
+
+
 Deployment
 Current production deployment:
 
@@ -135,4 +144,8 @@ MIT License
 Contact
 Shaun Saisi
 GitHub: @shaun-saisi
-Email: your-email@example.com
+Email: anundashaun@gmail.com
+
+### Presentation
+
+[📑 Presentation of My Approach (PowerPoint)](https://github.com/shaun-saisi/Clinix/blob/main/pitch%20deck.pptx)

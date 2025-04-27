@@ -1,71 +1,138 @@
-# Clinix Health Management System
-*A full-stack healthcare management solution*
+# Clinix - Health Information Management System
 
-## Features
-- Doctor registration and authentication
-- Patient (client) management
-- Health program creation
-- Patient enrollment tracking
-- Responsive React frontend
-- RESTful Django backend
+![Clinix Dashboard](frontend/public/images/clinix-preview.png)
+
+Clinix is a comprehensive Health Management System (HMS) designed to streamline patient management and health program tracking. Built with Django REST Framework (backend) and React (frontend), the system empowers healthcare professionals to efficiently manage client data and program enrollments.
+
+**Live Application**: http://143.198.21.25/  
+**API Documentation**: http://143.198.21.25/swagger/  
+**GitHub Repository**: https://github.com/shaun-saisi/Clinix  
+**Base API URL**: http://127.0.0.1:8000/api
+
+## Application Screenshots and Features
+
+### 1. Clinix Landing Page
+![Landing Page](Screenshot%20from%202025-04-27%2018-02-34.png)
+- Professional introduction to the HMS
+- Clear value proposition for healthcare professionals
+
+### 2. Doctor Dashboard
+![Dashboard](Screenshot%20from%202025-04-27%2018-03-27.png)
+- Personalized welcome with doctor's specialization
+- Quick statistics overview
+
+### 3. Client Management
+![Client Management](Screenshot%20from%202025-04-27%2018-03-44.png)
+- Search functionality for clients
+- List view with key client information
+
+### 4. Client Profile
+![Client Profile](Screenshot%20from%202025-04-27%2018-03-59.png)
+- Detailed personal information
+- Program enrollment management
+
+### 5. Health Programs
+![Programs List](Screenshot%20from%202025-04-27%2018-04-10.png)
+- Searchable list of health programs
+- Program cards with essential details
+
+### 6. Program Detail View
+![Program Details](Screenshot%20from%202025-04-27%2018-04-25.png)
+- Complete program information
+- Enrolled client management
+
+## Complete API Endpoints
+
+### Authentication
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/token/` | POST | Obtain JWT tokens |
+| `/doctor/register/` | POST | Register new doctor |
+
+### Clients
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/clients/` | GET | List all clients |
+| `/clients/` | POST | Create new client |
+| `/clients/{id}/` | GET | Get client details |
+| `/clients/{id}/` | PUT | Update client |
+| `/clients/{id}/` | PATCH | Partial client update |
+| `/clients/{id}/` | DELETE | Delete client |
+| `/clients/{id}/profile/` | GET | Get full client profile |
+
+### Doctors
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/doctor/me/` | GET | Get current doctor profile |
+| `/doctors/` | GET | List all doctors |
+| `/doctors/` | POST | Create new doctor |
+| `/doctors/{id}/` | GET | Get doctor details |
+| `/doctors/{id}/` | PUT | Update doctor |
+| `/doctors/{id}/` | PATCH | Partial doctor update |
+| `/doctors/{id}/` | DELETE | Delete doctor |
+
+### Programs
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/programs/` | GET | List all programs |
+| `/programs/` | POST | Create new program |
+| `/programs/{id}/` | GET | Get program details |
+| `/programs/{id}/` | PUT | Update program |
+| `/programs/{id}/` | PATCH | Partial program update |
+| `/programs/{id}/` | DELETE | Delete program |
+
+### Enrollments
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/enrollments/` | GET | List all enrollments |
+| `/enrollments/` | POST | Create new enrollment |
+| `/enrollments/{id}/` | GET | Get enrollment details |
+| `/enrollments/{id}/` | PUT | Update enrollment |
+| `/enrollments/{id}/` | PATCH | Partial enrollment update |
+| `/enrollments/{id}/` | DELETE | Delete enrollment |
 
 ## Technology Stack
-- **Frontend**: React, React Router, Axios
-- **Backend**: Django REST Framework, JWT Authentication
-- **Database**: SQLite (development)
 
-## Project Structure
-Clinix/
-├── backend/ # Django backend
-│ ├── clinix_backend/ # Project root
-│ └── requirements.txt # Python dependencies
-└── frontend/ # React frontend
-└── clinix_frontend/ # React app
+### Backend
+- **Framework**: Django 4.1 + Django REST Framework
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **API Docs**: drf-yasg (Swagger/OpenAPI)
 
-## Installation
+### Frontend
+- **Framework**: React 18
+- **UI Library**: Material-UI (MUI)
+- **State Management**: React Context API
 
-### Backend Setup
+## Installation Guide
+
 ```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-# OR venv\Scripts\activate (Windows)
+# Backend
+git clone https://github.com/shaun-saisi/Clinix.git
+cd Clinix/backend
+pipenv install
+python manage.py migrate
+python manage.py runserver
 
-pip install -r requirements.txt
-cd clinix_backend
-cd health 
-pip install -r requirements.txt
-
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py runserver
-
-
-cd frontend/clinix_frontend
+# Frontend
+cd ../frontend
 npm install
 npm start
+Deployment
+Current production deployment:
 
+Ubuntu 20.04 server
 
-API Endpoints (Base URL: http://127.0.0.1:8000/api)
-Authentication
-Endpoint	Method	Description
-/token/	POST	Obtain JWT tokens
-/doctor/register/	POST	Register new doctor
-Doctors
-Endpoint	Method	Description
-/doctor/me/	GET	Current doctor profile
-/doctors/	GET, POST	List/Create doctors
-/doctors/{id}/	GET, PUT, PATCH, DELETE	Doctor CRUD
-Clients
-Endpoint	Method	Description
-/clients/	GET, POST	List/Create clients
-/clients/{id}/	GET, PUT, PATCH, DELETE	Client CRUD
-/clients/{id}/profile/	GET	Client profile
-Programs
-Endpoint	Method	Description
-/programs/	GET, POST	List/Create programs
-/programs/{id}/	GET, PUT, PATCH, DELETE	Program CRUD
-Enrollments
-Endpoint	Method	Description
-/enrollments/	GET, POST	List/Create enrollments
-/enrollments/{id}/	GET, PUT, PATCH, DELETE	Enrollment CRUD
+Nginx web server
+
+Gunicorn application server
+
+Accessible at: http://143.198.21.25/
+
+License
+MIT License
+
+Contact
+Shaun Saisi
+GitHub: @shaun-saisi
+Email: your-email@example.com

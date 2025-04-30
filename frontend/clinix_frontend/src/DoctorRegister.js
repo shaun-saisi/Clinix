@@ -1,6 +1,5 @@
-// DoctorRegister.js  Also not using this page as I am still using modal registration forms 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from './api';
 
 const DoctorRegister = () => {
@@ -15,10 +14,11 @@ const DoctorRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/doctors/', formData);
+      await api.post('/doctor/register/', formData);
       navigate('/login');
     } catch (err) {
       console.error('Registration failed:', err);
+      alert('Registration error');
     }
   };
 
@@ -26,9 +26,31 @@ const DoctorRegister = () => {
     <div className="auth-container">
       <h2>Doctor Registration</h2>
       <form onSubmit={handleSubmit}>
-        {/* Form fields */}
+        <input
+          type="text"
+          placeholder="Username"
+          value={formData.username}
+          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Specialization"
+          value={formData.specialization}
+          onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Phone"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        />
         <button type="submit" className="primary-button">Register</button>
-        <p>Already have an account? <Link to="/login">Login here</Link></p>
       </form>
     </div>
   );

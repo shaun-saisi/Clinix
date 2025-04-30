@@ -14,9 +14,6 @@ class DoctorRegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'password', 'specialization', 'phone']
         extra_kwargs = {
             'password': {'write_only': True},
-            'username': {'required': True},
-            'specialization': {'required': True},
-            'phone': {'required': True}
         }
 
     def create(self, validated_data):
@@ -24,7 +21,7 @@ class DoctorRegisterSerializer(serializers.ModelSerializer):
 
 class ProgramSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only=True)
-    
+
     class Meta:
         model = Program
         fields = ['id', 'title', 'description', 'created_at', 'doctor']
